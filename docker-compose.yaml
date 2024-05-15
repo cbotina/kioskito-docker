@@ -1,0 +1,28 @@
+services:
+  laravel-docker-app:
+    container_name: kioskito-docker
+    build: .
+    volumes:
+      - ./dockerapp:/var/www/html
+    ports:
+      - 9009:8000
+    depends_on:
+      - mysql_db
+      - migrate
+    command: [ "php", "artisan", "serve", "--host=0.0.0.0" ]
+
+  migrate:
+    build: .
+    volumes:
+      - ./dockerapp:/var/www/html
+    depends_on:
+      - mysql_db
+    entrypoint: [ "php", "artisan", "migrate" ]
+
+  mysql_db:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=delunoalnueve
+      - MYSQL_DATABASE=kioskito
+    ports:
+      - 3309:3306
