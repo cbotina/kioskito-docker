@@ -21,3 +21,8 @@ RUN docker-php-ext-install gettext intl pdo_mysql gd
 RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd
 
+# Copy Apache virtual host configuration
+COPY apache.conf /etc/apache2/sites-available/000-default.conf
+
+WORKDIR /var/www/html
+
