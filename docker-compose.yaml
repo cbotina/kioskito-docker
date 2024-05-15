@@ -1,18 +1,25 @@
+version: '3'
 services:
-  laravel-docker-app:
-    container_name: kioskito-docker
-    build: .
+  laravel-app:
+    container_name: laravel-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80" # Map container's port 80 to host's port 80
     volumes:
       - ./dockerapp:/var/www/html
-    ports:
-      - 9009:8000
     depends_on:
       - mysql_db
       - migrate
-    command: [ "php", "artisan", "serve", "--host=0.0.0.0" ]
+    environment:
+      - APACHE_RUN_USER=#1000
+      - APACHE_RUN_GROUP=#1000
 
   migrate:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     volumes:
       - ./dockerapp:/var/www/html
     depends_on:
@@ -22,7 +29,5 @@ services:
   mysql_db:
     image: mysql:latest
     environment:
-      - MYSQL_ROOT_PASSWORD=delunoalnueve
-      - MYSQL_DATABASE=kioskito
-    ports:
-      - 3309:3306
+      MYSQL_ROOT_PASSWORD: delunoalnueve
+      MYSQL_DATABASE: kioskito
